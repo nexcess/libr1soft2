@@ -1,10 +1,10 @@
 <?php
 /**
- * Nexcess.net php-libr1soft
+ * Nexcess.net libr1soft2   
  *
  * <pre>
  * +----------------------------------------------------------------------+
- * | Nexcess.net php-libr1soft                                            |
+ * | Nexcess.net libr1soft2                                               |
  * +----------------------------------------------------------------------+
  * | Copyright (c) 2006-2011 Nexcess.net L.L.C., All Rights Reserved.     |
  * +----------------------------------------------------------------------+
