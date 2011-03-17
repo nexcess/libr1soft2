@@ -1,0 +1,22 @@
+--- /usr/share/php/Zend/XmlRpc/Request.php	2010-01-11 17:37:37.000000000 -0500
++++ Zend/XmlRpc/Request.php	2011-03-02 14:04:51.080047998 -0500
+@@ -411,17 +411,15 @@
+         $generator->openElement('methodCall')
+                   ->openElement('methodName', $method)
+                   ->closeElement('methodName');
+-
++        $generator->openElement('params');
+         if (is_array($args) && count($args)) {
+-            $generator->openElement('params');
+-
+             foreach ($args as $arg) {
+                 $generator->openElement('param');
+                 $arg->generateXml();
+                 $generator->closeElement('param');
+             }
+-            $generator->closeElement('params');
+         }
++        $generator->closeElement('params');
+         $generator->closeElement('methodCall');
+ 
+         return $generator->flush();
