@@ -269,7 +269,7 @@ class R1soft_Remote {
    */
   private function _wait() {
     if( $this->_delay ) {
-      usleep( int( $this->_delay * 1000000 ) );
+      usleep( intval( $this->_delay * 1000000 ) );
     }
   }
 }
