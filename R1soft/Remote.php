@@ -41,6 +41,8 @@ class R1soft_Remote {
   const ERROR_NATIVE_EXCEPTION                  = 17;
   const ERROR_VOLUME_NOT_FOUND_EXCEPTION        = 18;
   const ERROR_METHOD_NOT_FOUND_EXCEPTION        = 404;
+  const PORT_UNSECURE                           = 8084;
+  const PORT_SECURE                             = 8085;
 
   /**
    * The default API request pacing delay in seconds.
@@ -84,11 +86,18 @@ class R1soft_Remote {
    * @param bool $secure Use HTTPS
    */
   public function __construct( $host, $username, $password, $secure = true ) {
-    $scheme = $secure ? 'https' : 'http';
-    $port = $secure ? '8085' : '8084';
-    $this->_fullUrl = sprintf( '%s://%s:%s@%s:%s/xmlrpc', $scheme, $username,
-                               $password, $host, $port );
-    $this->_client = new Zend_XmlRpc_Client( $this->_fullUrl );
+    if( $secure ) {
+      $this->_fullUrl = sprintf( 'https://%s:%s@%s:%d/xmlrpc', $username,
+                                 $password, $host, self::PORT_SECURE );
+    $this->_client = new Zend_XmlRpc_Client( $this->_fullUrl,
+      new Zend_Http_Client( null, array(
+        'ssltransport'  => 'sslv3', //ssl does not properly detect v3
+      ) ) );
+    } else {
+      $this->_fullUrl = sprintf( 'http://%s:%s@%s:%s/xmlrpc', $username,
+                                 $password, $host, self::PORT_UNSECURE );
+      $this->_client = new Zend_XmlRpc_Client( $this->_fullUrl );
+    }
     $this->_proxy = $this->_client->getProxy();
     $this->_testConnection();
   }
@@ -255,8 +264,10 @@ class R1soft_Remote {
    * at object construction.
    */
   private function _testConnection() {
-    if( false ) {
-      throw new R1soft_Exception( 'Error setting up connection to R1soft API' );
+    try {
+        $this->user->getMyId();
+    } catch( Zend_Exception $e ) {
+      throw new R1soft_Remote_Exception( 'Error setting up connection to R1soft API' );
     }
   }
 
